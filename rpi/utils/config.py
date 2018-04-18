@@ -1,28 +1,10 @@
 # coding=utf-8
+import logging
 import os
 
-LOGGING_CONF = {
-    'version': 1,
-    'formatters': {
-        '': {
-            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        }
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'level': 'DEBUG',
-            'formatter': ''
-        }
-    },
-    'loggers': {
-        '': {
-            'level': 'DEBUG',
-            'handlers': ['console']
-        }
-    }
-
-}
+logging.basicConfig(format='%(asctime)s %(name)s[%(process)d] %(filename)s %(lineno)d %(levelname)s %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger('')
 
 WEATHER_CODE = {
     "AP010001": u"API请求参数错误。",

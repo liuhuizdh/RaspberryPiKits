@@ -1,16 +1,12 @@
 # coding=utf-8
 
 import datetime
-import logging.config
 
 import pygame
 import requests
 
-from config import WEATHER_CODE, WEATHER_DESC, LOGGING_CONF, BAIDU_KEY, BAIDU_S_KEY, WEATHER_KEY, \
-    WEATHER_VOICE_FILE_PATH, VOICE_SPEED, VOICE_VOL
-
-logging.config.dictConfig(LOGGING_CONF)
-logger = logging.getLogger('')
+from config import WEATHER_CODE, WEATHER_DESC, BAIDU_KEY, BAIDU_S_KEY, WEATHER_KEY, \
+    WEATHER_VOICE_FILE_PATH, VOICE_SPEED, VOICE_VOL, logger
 
 
 class BaiDuVoice(object):
@@ -50,9 +46,15 @@ class BaiDuVoice(object):
 
 
 class WeatherFetcher(object):
-    def __init__(self, location=u'成都'):
+    def __init__(self, location):
         self._key = WEATHER_KEY
-        self._location = location
+        try:
+            if not isinstance(location, unicode):
+                location = location.decode('utf-8')
+        except Exception as e:
+            logger.error(e, exc_info=True)
+        finally:
+            self._location = location
 
     def get_weather(self):
         """
@@ -73,7 +75,6 @@ class WeatherFetcher(object):
                 results = resp.json().get('results')
                 items = []
                 for item in results:
-                    logger.info(item)
                     now = item.get('now')
                     desc = now.get('text')
                     temp = now.get('temperature')
@@ -85,8 +86,8 @@ class WeatherFetcher(object):
                 msg = WEATHER_CODE.get(status_code)
                 return msg or u'天气获取失败'
         except Exception as e:
-            logger.error(e.message)
-            return e.message
+            logger.error(e, exc_info=True)
+            return e
 
     def get_suggestion(self):
         """
@@ -122,25 +123,24 @@ class WeatherFetcher(object):
                 msg = WEATHER_CODE.get(status_code)
                 return msg or u'生活指数获取失败'
         except Exception as e:
-            logger.error(e.message)
-            return e.message
+            logger.error(e, exc_info=True)
+            return e
 
 
-def broad_weather(location):
-    wf = WeatherFetcher(location=location)
-    weather = wf.get_weather()
-    suggestion = wf.get_suggestion()
-    logger.info(u'天气:{}'.format(weather))
-    logger.info(u'建议:{}'.format(suggestion))
-    bd = BaiDuVoice()
-    bd.get_voice(u"{},以下是建议:{}".format(weather, suggestion))
-    if bd.filename:
-        pygame.mixer.init()
-        pygame.mixer.music.load(bd.filename)
-        pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy():
-            continue
+def broad_weather(locations):
+    for location in locations:
+        wf = WeatherFetcher(location=location)
+        weather = wf.get_weather()
+        suggestion = wf.get_suggestion()
+        bd = BaiDuVoice()
+        bd.get_voice(u"天气预报: {}, 以下是建议:{}".format(weather, suggestion))
+        if bd.filename:
+            pygame.mixer.init()
+            pygame.mixer.music.load(bd.filename)
+            pygame.mixer.music.play()
+            while pygame.mixer.music.get_busy():
+                continue
 
 
 if __name__ == '__main__':
-    broad_weather(u'成都')
+    broad_weather([u'成都'])
