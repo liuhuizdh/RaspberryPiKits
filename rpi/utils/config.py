@@ -1,4 +1,5 @@
 # coding=utf-8
+import os
 
 LOGGING_CONF = {
     'version': 1,
@@ -51,6 +52,10 @@ WEATHER_DESC = {
     'sport': u'运动',
 }
 
-BAIDU_KEY = 'Yoq0CToDINxZyGosBi9rsCSL'
-BAIDU_S_KEY = '74b768788b82790645a1aaa0ba5a9a8e'
-WEATHER_KEY = 'opmc13gzz833wulw'
+BAIDU_KEY = os.getenv('BAIDU_KEY')
+BAIDU_S_KEY = os.getenv('BAIDU_S_KEY')
+WEATHER_KEY = os.getenv('WEATHER_KEY')
+
+WEATHER_VOICE_FILE_PATH = '.'
+VOICE_SPEED = 3
+VOICE_VOL = 15

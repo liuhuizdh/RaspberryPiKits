@@ -6,15 +6,11 @@ import logging.config
 import pygame
 import requests
 
-from config import WEATHER_CODE, WEATHER_DESC, LOGGING_CONF, BAIDU_KEY, BAIDU_S_KEY, WEATHER_KEY
+from config import WEATHER_CODE, WEATHER_DESC, LOGGING_CONF, BAIDU_KEY, BAIDU_S_KEY, WEATHER_KEY, \
+    WEATHER_VOICE_FILE_PATH, VOICE_SPEED, VOICE_VOL
 
 logging.config.dictConfig(LOGGING_CONF)
 logger = logging.getLogger('')
-
-VOICE_SPEED = 3
-VOICE_VOL = 15
-
-VOICE_DIR = '.'
 
 
 class BaiDuVoice(object):
@@ -46,7 +42,7 @@ class BaiDuVoice(object):
 
         resp = requests.get(url, params=querystring)
         chunk_size = 200
-        path = '{}/{}.mp3'.format(VOICE_DIR, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+        path = '{}/{}.mp3'.format(WEATHER_VOICE_FILE_PATH, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         with open(path, 'wb') as fd:
             for chunk in resp.iter_content(chunk_size):
                 fd.write(chunk)
