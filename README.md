@@ -1,19 +1,22 @@
 # RaspberryPi Kits
 
-* Weather Speaker Dependencies
-    * [http://yuyin.baidu.com](http://yuyin.baidu.com/app)
-    * [https://www.seniverse.com/doc#now](https://www.seniverse.com/doc#now)
+
+* Weather Speaker
+* Video Searcher
 
 ## pre
 
 export your key to environment value
+
+> [http://yuyin.baidu.com](http://yuyin.baidu.com)
+
+> [https://www.seniverse.com](https://www.seniverse.com)
 
 ```bash
 export BAIDU_KEY='xxx'
 export BAIDU_S_KEY='xxx'
 export WEATHER_KEY='xxx'
 ```
-
 
 ## build
 
