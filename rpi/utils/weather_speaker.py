@@ -8,6 +8,8 @@ import requests
 from config import WEATHER_CODE, WEATHER_DESC, BAIDU_KEY, BAIDU_S_KEY, WEATHER_KEY, \
     WEATHER_VOICE_FILE_PATH, VOICE_SPEED, VOICE_VOL, logger
 
+from comm import str2unicode
+
 
 class BaiDuVoice(object):
     def __init__(self):
@@ -48,13 +50,7 @@ class BaiDuVoice(object):
 class WeatherFetcher(object):
     def __init__(self, location):
         self._key = WEATHER_KEY
-        try:
-            if not isinstance(location, unicode):
-                location = location.decode('utf-8')
-        except Exception as e:
-            logger.error(e, exc_info=True)
-        finally:
-            self._location = location
+        self._location = str2unicode(location)
 
     def get_weather(self):
         """

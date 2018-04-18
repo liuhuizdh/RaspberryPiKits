@@ -1,11 +1,12 @@
 # coding=utf-8
 
-from utils.weather_broadecast import broad_weather
-
 import argparse
+from utils import weather_speaker
+from utils import movie_searcher
 
 KITS = {
-    'weather': broad_weather
+    'weather': weather_speaker.broad_weather,
+    'movie': movie_searcher.do_fetch
 }
 
 

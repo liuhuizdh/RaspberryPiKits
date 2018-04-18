@@ -23,8 +23,17 @@ venv/bin/pip install -r requestmetns.txt
 ```
 
 ## run
+
+* weather speaker
+
 ```bash
 venv/bin/python rpi/main.py weather -a '成都' -a '北京'
+```
+
+* movie searcher
+
+```bash
+venv/bin/python rpi/main.py movie -a 'Silicon valley'
 ```
 
 ## extends
