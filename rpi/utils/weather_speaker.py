@@ -1,10 +1,9 @@
 # coding=utf-8
 
 import datetime
-
-import pygame
+import os
 import requests
-
+from subprocess import call
 from config import WEATHER_CODE, WEATHER_DESC, BAIDU_KEY, BAIDU_S_KEY, WEATHER_KEY, \
     WEATHER_VOICE_FILE_PATH, VOICE_SPEED, VOICE_VOL, logger
 
@@ -24,6 +23,7 @@ class BaiDuVoice(object):
                        "client_secret": self._s_key}
         try:
             response = requests.get(url, params=querystring)
+	    logger.info(response.content)
             data = response.json()
             token = data.get('access_token')
             self._token = token
@@ -44,7 +44,7 @@ class BaiDuVoice(object):
         with open(path, 'wb') as fd:
             for chunk in resp.iter_content(chunk_size):
                 fd.write(chunk)
-        self.filename = path
+        self.filename = os.path.abspath(path)
 
 
 class WeatherFetcher(object):
@@ -122,6 +122,14 @@ class WeatherFetcher(object):
             logger.error(e, exc_info=True)
             return e
 
+class Speaker(object):
+    @staticmethod
+    def speak(file_path):
+	logger.info('Mp3 File:{}'.format(file_path))
+        try:
+            call(['mpg123', file_path])
+        except Exception as e:
+            logger.error(e, exc_info=True)
 
 def broad_weather(locations):
     for location in locations:
@@ -131,11 +139,7 @@ def broad_weather(locations):
         bd = BaiDuVoice()
         bd.get_voice(u"天气预报: {}, 以下是建议:{}".format(weather, suggestion))
         if bd.filename:
-            pygame.mixer.init()
-            pygame.mixer.music.load(bd.filename)
-            pygame.mixer.music.play()
-            while pygame.mixer.music.get_busy():
-                continue
+	    Speaker.speak(bd.filename)
 
 
 if __name__ == '__main__':
